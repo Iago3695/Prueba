@@ -308,7 +308,7 @@
 
           let formattedDate = `${year}-${month}-${day}`;
 
-          if(!document.getElementById("date-checkout").value || new Date(document.getElementById("date-checkout").value).getTime() < checkinDate.getTime()){
+          if(!document.getElementById("date-checkout").value || new Date(document.getElementById("date-checkout").value).getTime() <= checkinDate.getTime()){
             document.getElementById("date-checkout").value = formattedDate;
           }
           document.getElementById("date-checkout").min = formattedDate;
@@ -332,3 +332,4 @@
 </body>
 
 </html>
+
