@@ -3,6 +3,7 @@
 
 <head>
   <meta charset='utf-8'>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       display: flex;
@@ -234,6 +235,32 @@
     }
 
     /* RESERVATION BOX SMALL */
+    @media only screen and (max-width: 600px) {
+
+      .reservation-box,
+      .reservation-box .flex {
+        flex-direction: column;
+      }
+
+      .reservation-box .top {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .reservation-box .static {
+        margin-right: 0px;
+      }
+
+      .reservation-box .bottom {
+        text-align: center;
+      }
+
+      .reservation-box .button-container {
+        min-width: 217px;
+      }
+    }
+    
     .reservation-box.small,
     .reservation-box.small .flex {
       flex-direction: column;
@@ -332,5 +359,6 @@
 </body>
 
 </html>
+
 
 
