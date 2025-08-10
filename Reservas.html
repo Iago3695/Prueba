@@ -261,12 +261,12 @@
 </head>
 
 <body>
-  <div class="reservation-box">
+  <div class="reservation-box" id="reservation-box">
     <div class="top">
       <div class="static">
         <div class="input-container" id="date-picker-container">
           <label for="date-from">Fecha de entrada</label>
-          <input type="date" id="date-checkin" class="date-field"
+          <input type="date" id="date-checkin" class="date-field" min=""
             name"date-from">
         </div>
       </div>
@@ -275,7 +275,7 @@
           <label for="date-from">Fecha de salida</label>
           <input type="date" id="date-checkout" class="date-field" name"">
         </div>
-        <div class="button-container">
+        <div class="button-container" id="search">
           <span class="button ok">Buscar</span>
         </div>
       </div>
@@ -285,6 +285,50 @@
         overview.</a>
     </div>-->
   </div>
+  <script>
+    let checkin = document.getElementById("date-checkin");
+    checkin.min = new Date().toISOString().split("T")[0];
+    checkin.value = new Date().toISOString().split("T")[0];
+    adjust();
+
+    checkin.addEventListener("change", adjust);
+    function adjust() {
+        let checkinValue = document.getElementById("date-checkin").value;
+
+        if (checkinValue) {
+          let checkinDate = new Date(checkinValue);
+
+          // Sumamos un día (86400000 milisegundos)
+          let checkoutDate = new Date(checkinDate.getTime() + 86400000);
+
+          // Convertimos a formato YYYY-MM-DD
+          let year = checkoutDate.getFullYear();
+          let month = String(checkoutDate.getMonth() + 1).padStart(2, '0');
+          let day = String(checkoutDate.getDate()).padStart(2, '0');
+
+          let formattedDate = `${year}-${month}-${day}`;
+
+          if(!document.getElementById("date-checkout").value || new Date(document.getElementById("date-checkout").value).getTime() < checkinDate.getTime()){
+            document.getElementById("date-checkout").value = formattedDate;
+          }
+          document.getElementById("date-checkout").min = formattedDate;
+        }
+      }
+
+    let search = document.getElementById("search");
+    search.addEventListener("click", doSearch);
+
+    function doSearch() {
+      var url = "https://www.avaibook.com/reservas/nueva_reserva.php?lang=ES&cod_propietario=18216&avanzada=&previsualizar=&idw=14100&cod_alojamiento=24413&";
+      var checkin = document.getElementById("date-checkin").value;
+      var checkout = document.getElementById("date-checkout").value;
+      console.log(checkin , checkout);
+      if(checkin && checkout){
+        url += "f_ini=" + checkin + "&f_fin=" + checkout;
+        open(url);
+      }
+      }
+  </script>
 </body>
 
 </html>
