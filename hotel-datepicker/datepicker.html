@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Booking Bar</title>
+  <link rel="stylesheet" href="./hotel-datepicker/hotel-datepicker.css">
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 60px 20px;
+      background: #f5f5f5;
+      font-family: Arial, sans-serif;
+    }
+
+    .booking-bar {
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    .booking-bar__inner {
+      background: #fff;
+      border-radius: 18px;
+      padding: 18px;
+      display: flex;
+      gap: 18px;
+      align-items: end;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, .08);
+      flex-wrap: wrap;
+      width: max-content;
+      margin: auto;
+    }
+
+    .booking-bar__field {
+      flex: 1;
+      min-width: 280px;
+    }
+
+    .booking-bar__label {
+      display: block;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: #1b1b1b;
+    }
+
+    .booking-bar__datepicker-trigger {
+      position: relative;
+    }
+
+    .booking-bar__field-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #777;
+      font-size: 16px;
+    }
+
+    .booking-bar__datepicker-input {
+      width: 100%;
+      height: 58px;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 0 18px 0 48px;
+      font-size: 16px;
+      background: #fff;
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .booking-bar__datepicker-input:hover {
+      border-color: #999;
+    }
+
+    .booking-bar__datepicker-input:focus {
+      outline: none;
+      border-color: #111;
+    }
+
+    .booking-form {
+      display: flex;
+      gap: 18px;
+      align-items: end;
+      flex-wrap: wrap;
+      flex: 1;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-group label {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .form-control {
+      height: 58px;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 0 16px;
+      font-size: 16px;
+      background: #fff;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: #111;
+    }
+
+    .guests-field {
+      width: 140px;
+    }
+
+    .booking-submit {
+      height: 58px;
+      padding: 0 34px;
+      border: none;
+      border-radius: 12px;
+      background: #111;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .booking-submit:hover {
+      background: #333;
+    }
+
+    .hidden-dates {
+      display: none;
+    }
+
+    .datepicker {
+      font-family: Arial, sans-serif;
+    }
+
+    @media(max-width:900px) {
+
+      .booking-bar__inner {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .booking-form {
+        width: 100%;
+      }
+
+      .guests-field {
+        width: 100%;
+      }
+
+      .booking-submit {
+        width: 100%;
+      }
+
+    }
+
+    .datepicker {
+      font-family: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+      border-radius: 1rem !important;
+      border: 1px solid #e2e8f0 !important;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12) !important;
+      z-index: 9999;
+    }
+
+    .datepicker__topbar {
+      background: #124668 !important;
+      color: white !important;
+      font-family: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+      font-size: 0.875rem !important;
+      border-radius: 1rem 1rem 0 0 !important;
+      padding: 0.75rem 1.25rem !important;
+    }
+
+    .datepicker__info {
+      color: rgba(255, 255, 255, 0.9) !important;
+    }
+
+    .datepicker__info--selected {
+      color: white !important;
+      font-weight: 600 !important;
+    }
+
+    .datepicker__info--selected strong {
+      color: #fad161 !important;
+    }
+
+    .datepicker__close-button {
+      background: #ff9f1c !important;
+      color: white !important;
+      border: none !important;
+      border-radius: 0.5rem !important;
+      padding: 0.25rem .5rem !important;
+      font-family: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+      font-weight: 600 !important;
+      font-size: 0.875rem !important;
+      cursor: pointer !important;
+      transition: all 0.3s ease !important;
+    }
+
+    .datepicker__buttons {
+      right: .5rem;
+    }
+
+    .datepicker__close-button:hover {
+      background: #e88a0c !important;
+    }
+
+    .datepicker__months {
+      background: white !important;
+    }
+
+    .datepicker__month-caption {
+      font-family: "Playfair Display", Georgia, "Times New Roman", serif !important;
+      color: #0d1b26 !important;
+      font-weight: 700 !important;
+      font-size: 1.125rem !important;
+    }
+
+    .datepicker__month-button {
+      color: #94a3b8 !important;
+      transition: all 0.3s ease !important;
+    }
+
+    .datepicker__month-button:hover {
+      color: #ff9f1c !important;
+    }
+
+    .datepicker__week-row {
+      border-bottom: 1px solid #f1f5f9 !important;
+    }
+
+    .datepicker__week-name {
+      color: #64748b !important;
+      font-size: 0.75rem !important;
+      font-weight: 600 !important;
+      text-transform: uppercase !important;
+      letter-spacing: 0.05em !important;
+    }
+
+    .datepicker__month-day {
+      font-size: 0.875rem !important;
+      color: #334155 !important;
+      transition: all 0.3s ease !important;
+    }
+
+    .datepicker__month-day--invalid {
+      color: #cbd5e1 !important;
+    }
+
+    .datepicker__month-day--today {
+      font-weight: 700 !important;
+      color: #124668 !important;
+    }
+
+    .datepicker__month-day--first-day-selected {
+      background: #ff9f1c !important;
+      color: white !important;
+      border-radius: 0.5rem 0 0 0.5rem !important;
+    }
+
+    .datepicker__month-day--last-day-selected {
+      background: #ff9f1c !important;
+      color: white !important;
+      border-radius: 0 0.5rem 0.5rem 0 !important;
+    }
+
+    .datepicker__month-day--selected {
+      background: rgba(255, 159, 28, 0.1) !important;
+      color: #0d1b26 !important;
+    }
+
+    .datepicker__month-day--hovering {
+      background: rgba(255, 159, 28, 0.15) !important;
+      cursor: pointer !important;
+    }
+
+    .datepicker__month-day--disabled,
+    .datepicker__month-day--before-start-date {
+      color: #cbd5e1 !important;
+      cursor: not-allowed !important;
+    }
+
+    .datepicker__month-day--disabled:hover,
+    .datepicker__month-day--before-start-date:hover {
+      background: transparent !important;
+    }
+
+    .datepicker__month-day--out-of-range {
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+
+    .datepicker__tooltip {
+      background: #0d1b26 !important;
+      color: white !important;
+      border-radius: 0.375rem !important;
+      font-size: 0.75rem !important;
+      font-family: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+      padding: 0.25rem 0.5rem !important;
+    }
+
+    @media (max-width: 767px) {
+      .datepicker__months {
+        flex-direction: column !important;
+      }
+
+      .datepicker__month:last-child {
+        display: none !important;
+      }
+    }
+
+    @media (min-width: 320px) {
+      .datepicker {
+        top: 2rem;
+        left: 0;
+      }
+    }
+
+    @media (min-width: 320px) and (max-width: 768px) {
+      .datepicker {
+        width: 100% !important;
+      }
+
+      .datepicker .datepicker__month {
+        width: 100% !important;
+      }
+
+      .datepicker__months::before {
+        display: none !important;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .datepicker__topbar {
+        display: none;
+      }
+
+      .booking-bar__field {
+        margin-bottom: 0.25rem;
+        margin-top: 0.5rem;
+      }
+
+      .booking-bar__drupal-form .form-item {
+        margin-top: 0.25rem;
+      }
+
+      .booking-bar input[type=submit] {
+        margin-bottom: 0.5rem;
+      }
+    }
+
+    .booking-bar__label,
+    .guests-field>label {
+      font-family: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #64748b;
+      margin-bottom: 0.5rem;
+      line-height: 1;
+      display: block;
+      font-size: 0.8rem;
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .guests-field #edit-guests {
+      padding-left: 2.75rem;
+      font-size: 0.875rem;
+      line-height: 1.4;
+      font-weight: 500;
+    }
+
+    .guests-field::before {
+      position: absolute;
+      margin-top: 42.8px;
+      margin-left: 1rem;
+      content: "\f500";
+      font-weight: 600;
+      font-family: "Font Awesome 6 Free";
+      color: #777;
+      font-size: .875rem;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="booking-bar">
+
+    <div class="booking-bar__inner">
+
+      <!-- FORM -->
+      <form id="hotel-room-search-form" class="booking-form">
+        <!-- DATEPICKER -->
+        <div class="booking-bar__field booking-bar__field--dates">
+
+          <label class="booking-bar__label">
+            Fechas
+          </label>
+
+          <div class="booking-bar__datepicker-trigger">
+
+            <i class="fa-regular fa-calendar booking-bar__field-icon"></i>
+
+            <input type="text" id="booking-datepicker-input"
+              class="booking-bar__datepicker-input"
+              placeholder="Llegada → Salida" readonly>
+
+          </div>
+
+        </div>
+        <div class="hidden-dates">
+
+          <input type="date" id="edit-check-in" name="check_in">
+          <input type="date" id="edit-check-out" name="check_out">
+
+        </div>
+
+        <div class="form-group guests-field">
+
+          <label for="edit-guests">
+            Adultos
+          </label>
+
+          <input type="number" id="edit-guests" name="guests"
+            class="form-control" value="2" min="1" max="10">
+
+        </div>
+
+        <button type="submit" class="booking-submit">
+          Buscar
+        </button>
+
+      </form>
+
+    </div>
+
+  </div>
+
+  <script src="./hotel-datepicker/fecha.min.js"></script>
+  <script src="./hotel-datepicker/hotel-datepicker.min.js"></script>
+
+  <script>
+
+    const visibleInput = document.getElementById('booking-datepicker-input');
+
+    const checkInInput = document.getElementById('edit-check-in');
+    const checkOutInput = document.getElementById('edit-check-out');
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const picker = new HotelDatepicker(visibleInput, {
+
+      format: 'ddd, DD MMM',
+
+      separator: ' → ',
+
+      startOfWeek: 'monday',
+
+      minNights: 1,
+
+      selectForward: true,
+
+      autoClose: true,
+
+      moveBothMonths: true,
+
+      showTopbar: true,
+
+      startDate: today,
+
+      i18n: {
+
+        selected: 'Tu estancia:',
+        night: 'Noche',
+        nights: 'Noches',
+
+        button: 'X',
+
+        clearButton: 'Limpiar',
+
+        submitButton: 'Aplicar',
+
+        'day-names-short': [
+          'Dom',
+          'Lun',
+          'Mar',
+          'Mié',
+          'Jue',
+          'Vie',
+          'Sáb'
+        ],
+
+        'month-names': [
+          'Enero',
+          'Febrero',
+          'Marzo',
+          'Abril',
+          'Mayo',
+          'Junio',
+          'Julio',
+          'Agosto',
+          'Septiembre',
+          'Octubre',
+          'Noviembre',
+          'Diciembre'
+        ],
+
+        'month-names-short': [
+          'Ene',
+          'Feb',
+          'Mar',
+          'Abr',
+          'May',
+          'Jun',
+          'Jul',
+          'Ago',
+          'Sep',
+          'Oct',
+          'Nov',
+          'Dic'
+        ],
+
+      },
+
+      onSelectRange: function () {
+        syncDrupalInputs();
+      },
+
+    });
+
+    function syncDrupalInputs() {
+      var startRaw = picker.start;
+      var endRaw = picker.end;
+
+      if (!startRaw || !endRaw) {
+        return;
+      }
+
+      var startDate = normalizeDate(startRaw);
+      var endDate = normalizeDate(endRaw);
+
+      if (isValidDate(startDate) && isValidDate(endDate)) {
+        checkInInput.value = dateToISO(startDate);
+        checkOutInput.value = dateToISO(endDate);
+
+        triggerChange(checkInInput);
+        triggerChange(checkOutInput);
+      } else {
+        console.warn('[HotelDatepicker] Could not parse dates from picker:', startRaw, endRaw);
+      }
+    }
+
+    function isValidDate(date) {
+      return date instanceof Date && !isNaN(date.getTime());
+    }
+
+    function triggerChange(input) {
+      var event = new Event('change', { bubbles: true });
+      input.dispatchEvent(event);
+    }
+
+    /**
+         * Converts a native Date object to YYYY-MM-DD string (ISO 8601).
+         * Required format for Drupal's type="date" inputs.
+         *
+         * @param {Date} date  Must be a valid native Date object.
+         * @return {string} e.g. "2026-04-07"
+         */
+    function dateToISO(date) {
+      var y = date.getFullYear();
+      var m = String(date.getMonth() + 1).padStart(2, '0');
+      var d = String(date.getDate()).padStart(2, '0');
+      return y + '-' + m + '-' + d;
+    }
+
+    /**
+           * Normalizes a value from picker.start / picker.end to a native Date.
+           *
+           * HotelDatepicker may provide:
+           *  - A native Date object
+           *  - A string in the picker's format (e.g. "Mon, 07 Apr")
+           *  - A string in YYYY-MM-DD format
+           *  - A timestamp (number)
+           *
+           * @param {Date|string|number} value
+           * @return {Date}
+           */
+    function normalizeDate(value) {
+      // Already a Date object
+      if (value instanceof Date) {
+        return value;
+      }
+
+      // Timestamp
+      if (typeof value === 'number') {
+        return new Date(value);
+      }
+
+      if (typeof value === 'string') {
+        // ISO format YYYY-MM-DD — safe to parse with time suffix
+        if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+          return new Date(value + 'T00:00:00');
+        }
+
+        // Picker display format: "ddd, DD MMM" e.g. "Mon, 07 Apr"
+        // Use fecha.js (already loaded as HotelDatepicker dependency)
+        if (typeof fecha !== 'undefined') {
+          var parsed = fecha.parse(value, 'ddd, DD MMM');
+          if (parsed) {
+            // fecha.parse without year assumes current year.
+            // If the parsed date is before today, bump to next year.
+            var now = new Date();
+            now.setHours(0, 0, 0, 0);
+            if (parsed < now) {
+              parsed.setFullYear(parsed.getFullYear() + 1);
+            }
+            return parsed;
+          }
+        }
+
+        // Last resort: native Date parsing
+        var fallback = new Date(value);
+        return fallback;
+      }
+
+      return new Date(NaN); // Will fail isValidDate()
+    }
+
+    document
+      .getElementById('hotel-room-search-form')
+      .addEventListener('submit', function (e) {
+
+        e.preventDefault();
+
+        if (!checkInInput.value || !checkOutInput.value) {
+
+          alert('Selecciona las fechas');
+
+          picker.open();
+
+          return;
+
+        }
+
+        const guests = document.getElementById('edit-guests').value;
+
+        const url =
+          `https://bookonline.pro/es/property/24413?guests=${guests}&startDate=${checkInInput.value}&endDate=${checkOutInput.value}`;
+
+        window.location.href = url;
+
+      });
+
+  </script>
+
+</body>
+
+</html>
